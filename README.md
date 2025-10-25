@@ -3,7 +3,7 @@
 CLI TOOL for productivity
 
 Features: 
-  - To Do List
+  - To Do List ✅
   - Pomodoro Timer
   - Generate Random / New (Motivation / Dad Jokes / Quote)
   - Trivia Quiz to Refresh Your Mind
