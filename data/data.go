@@ -38,6 +38,66 @@ func CreateTable() {
 	fmt.Println("Table Created")
 }
 
+func CreatePomodoroTable() {
+	createTable := `
+	CREATE TABLE IF NOT EXISTS pomodoro_sessions (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		sessionType TEXT,
+		durationMinutes INTEGER,
+		startTime DATETIME,
+		endTime DATETIME,
+		status TEXT
+	);`
+	statement, err := db.Prepare(createTable)
+	if err != nil {
+		log.Fatalf("❌ Failed to create pomodoro table: %v", err)
+	}
+	statement.Exec()
+}
+
+func InsertPomodoroSession(sessionType string, duration int, status string, start, end time.Time) error {
+	insertSQL := `INSERT INTO pomodoro_sessions (sessionType, durationMinutes, startTime, endTime, status) VALUES (?, ?, ?, ?, ?)`
+	statement, err := db.Prepare(insertSQL)
+	if err != nil {
+		return fmt.Errorf("failed to prepare statement: %v", err)
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(sessionType, duration, start, end, status)
+	if err != nil {
+		return fmt.Errorf("failed to insert pomodoro session: %v", err)
+	}
+
+	return nil
+}
+
+type PomodoroSession struct {
+	ID          int
+	SessionType string
+	Duration    int
+	StartTime   time.Time
+	EndTime     time.Time
+	Status      string
+}
+
+func GetAllPomodoroSessions() ([]PomodoroSession, error) {
+	rows, err := db.Query(`SELECT id, sessionType, durationMinutes, startTime, endTime, status FROM pomodoro_sessions ORDER BY id DESC`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var sessions []PomodoroSession
+	for rows.Next() {
+		var s PomodoroSession
+		err := rows.Scan(&s.ID, &s.SessionType, &s.Duration, &s.StartTime, &s.EndTime, &s.Status)
+		if err != nil {
+			return nil, err
+		}
+		sessions = append(sessions, s)
+	}
+	return sessions, nil
+}
 func InsertNote(taskContent string, taskEndDate *time.Time) error {
 	insertNoteSQL := `INSERT INTO tasks (taskContent, taskEndDate) VALUES (?, ?)`
 	statement, err := db.Prepare(insertNoteSQL)
