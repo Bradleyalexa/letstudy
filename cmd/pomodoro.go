@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"strings"
 	"time"
-
+	"github.com/gen2brain/beeep"
 	"github.com/bradleyalexa/letstudy/data"
 	"github.com/spf13/cobra"
 )
@@ -67,7 +67,8 @@ func startPomodoro(sessionType string, duration int) {
 					remaining -= time.Second
 					printProgressBar(remaining, duration)
 					if remaining <= 0 {
-						fmt.Print("\n✅ Time’s up! Take a break ☕\a\n")
+						fmt.Println("\n✅ Time’s up!")
+						beeep.Alert("Pomodoro Finished!", "Time’s up!", "")
 						done <- true
 						return
 					}
