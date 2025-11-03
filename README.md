@@ -60,7 +60,7 @@ letstudy task remind       # Show upcoming due tasks
 Reflection
 ```bash
 letstudy reflect list      # View all reflections (task ID + title)
-letstudy reflect view 3    # View reflection details for task ID 3
+letstudy reflect view 3    # View reflection details for reflection ID 3
 ```
 
 Quick Notes
